@@ -3,148 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Side Quest</title>
+    <title>Side Quest | Minimal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #f9fafb; color: #111827; }
-        .hidden { display: none; }
-        .quest-card { background: white; border: 1px solid #e5e7eb; transition: all 0.2s; }
-        .quest-card:hover { border-color: #6366f1; transform: translateY(-2px); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb; 
+            color: #111827; 
+        }
+
+        .quest-card { 
+            background: white; 
+            border: 1px solid #e5e7eb; 
+            border-radius: 24px;
+            transition: all 0.2s ease;
+        }
+
+        .quest-card:hover { 
+            border-color: #6366f1; 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Smooth transition for the Create Overlay */
+        #viewCreate {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hidden-view {
+            transform: translateY(100%);
+            display: none;
+        }
     </style>
 </head>
 <body class="antialiased">
 
-    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-        <button id="navCreateBtn" class="text-indigo-600 font-bold hover:text-indigo-800">+ Create Side Quest</button>
-        <h1 class="text-xl font-black tracking-tighter">SIDE QUEST</h1>
-        <div id="authSection">
-            <button id="loginBtn" class="bg-black text-white px-4 py-2 rounded-full text-sm font-medium">Log In</button>
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <button id="navCreateBtn" class="text-indigo-600 font-bold text-sm tracking-tight hover:opacity-70 transition">
+                + CREATE QUEST
+            </button>
+            
+            <h1 class="text-xl font-black tracking-tighter italic">SIDE QUEST</h1>
+            
+            <div id="authSection">
+                <button id="loginBtn" class="bg-black text-white px-5 py-2 rounded-full text-xs font-bold tracking-widest hover:bg-gray-800 transition">
+                    LOG IN
+                </button>
+            </div>
         </div>
     </nav>
 
-    <main id="viewFeed" class="max-w-2xl mx-auto py-8 px-4">
-        <div id="questContainer" class="space-y-6">
+    <main id="viewFeed" class="max-w-xl mx-auto py-10 px-4">
+        <div id="questContainer" class="space-y-8">
+            <div class="text-center py-20 text-gray-400 animate-pulse">
+                Loading quests...
             </div>
+        </div>
     </main>
 
-    <section id="viewCreate" class="hidden fixed inset-0 z-[60] bg-white p-8 overflow-y-auto">
-        <div class="max-w-xl mx-auto">
-            <button id="closeCreateBtn" class="mb-8 text-gray-500">← Back to Feed</button>
-            <h2 class="text-3xl font-bold mb-6">New Quest</h2>
+    <section id="viewCreate" class="fixed inset-0 z-[60] bg-white p-6 hidden">
+        <div class="max-w-lg mx-auto h-full flex flex-col">
+            <div class="flex justify-between items-center mb-10">
+                <button id="closeCreateBtn" class="text-gray-400 hover:text-black transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <span class="text-xs font-bold text-gray-300 tracking-widest">NEW ENTRY</span>
+                <div class="w-6"></div> </div>
+
+            <h2 class="text-4xl font-black mb-8 tracking-tighter">What's the quest?</h2>
             
-            <div class="space-y-4">
-                <input type="text" id="qTitle" placeholder="Quest Title" class="w-full p-4 border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none">
-                <textarea id="qDesc" placeholder="Description..." class="w-full p-4 border rounded-xl h-32 focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
-                
-                <div class="flex items-center gap-4 py-2">
-                    <label class="flex items-center gap-2">
-                        <input type="radio" name="visibility" value="public" checked> Public
-                    </label>
-                    <label class="flex items-center gap-2">
-                        <input type="radio" name="visibility" value="private"> Private (Me only)
-                    </label>
+            <div class="space-y-6 flex-grow">
+                <div>
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Title</label>
+                    <input type="text" id="qTitle" placeholder="The Midnight Walk" 
+                        class="w-full text-2xl font-bold p-0 border-none focus:ring-0 outline-none placeholder:text-gray-200">
                 </div>
 
-                <button id="publishBtn" class="w-full bg-indigo-600 text-white p-4 rounded-xl font-bold shadow-lg shadow-indigo-200">Publish Quest</button>
-                <p class="text-xs text-center text-gray-400">Note: Published quests cannot be deleted.</p>
+                <div>
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Description</label>
+                    <textarea id="qDesc" placeholder="Go to the part of town you never visit and find a red door..." 
+                        class="w-full text-lg p-0 border-none focus:ring-0 outline-none h-40 resize-none placeholder:text-gray-200"></textarea>
+                </div>
+                
+                <div class="flex items-center gap-6 py-4 border-t border-gray-50">
+                    <label class="flex items-center gap-2 cursor-pointer group text-sm font-medium">
+                        <input type="radio" name="visibility" value="public" checked class="text-black focus:ring-black">
+                        <span class="group-hover:text-indigo-600">Public</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer group text-sm font-medium">
+                        <input type="radio" name="visibility" value="private" class="text-black focus:ring-black">
+                        <span class="group-hover:text-indigo-600">Private</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="pb-10">
+                <button id="publishBtn" class="w-full bg-black text-white p-5 rounded-2xl font-bold text-lg hover:bg-indigo-600 transition shadow-xl shadow-gray-200">
+                    Publish Quest
+                </button>
+                <p class="text-[10px] text-center text-gray-400 mt-4 uppercase tracking-widest">Permanent Record • No Deletion</p>
             </div>
         </div>
     </section>
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script src="supabase-client.js"></script>
+    
+    <script src="app.js"></script>
 
-    <script>
-        // --- 1. CONFIG (PASTE YOURS HERE) ---
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            projectId: "YOUR_PROJECT_ID",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
-
-        // --- 2. NAVIGATION LOGIC ---
-        const viewFeed = document.getElementById('viewFeed');
-        const viewCreate = document.getElementById('viewCreate');
-
-        document.getElementById('navCreateBtn').onclick = () => {
-            if(!auth.currentUser) return alert("You must be logged in to create a quest!");
-            viewCreate.classList.remove('hidden');
-        };
-        document.getElementById('closeCreateBtn').onclick = () => viewCreate.classList.add('hidden');
-
-        // --- 3. AUTH LOGIC ---
-        document.getElementById('loginBtn').onclick = () => {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider);
-        };
-
-        auth.onAuthStateChanged(user => {
-            const authSection = document.getElementById('authSection');
-            if (user) {
-                authSection.innerHTML = `<span class="text-sm font-bold mr-4">${user.displayName}</span><button onclick="auth.signOut()" class="text-gray-400">Log Out</button>`;
-            } else {
-                authSection.innerHTML = `<button id="loginBtn" class="bg-black text-white px-4 py-2 rounded-full text-sm font-medium">Log In</button>`;
-                // Re-attach listener if re-rendered
-                document.getElementById('loginBtn').onclick = () => auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
-            }
-        });
-
-        // --- 4. DATA LOGIC ---
-        document.getElementById('publishBtn').onclick = async () => {
-            const title = document.getElementById('qTitle').value;
-            const desc = document.getElementById('qDesc').value;
-            const visibility = document.querySelector('input[name="visibility"]:checked').value;
-
-            if(title && desc) {
-                await db.collection("quests").add({
-                    title, desc, visibility,
-                    userId: auth.currentUser.uid,
-                    author: auth.currentUser.displayName,
-                    likes: 0,
-                    dislikes: 0,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                viewCreate.classList.add('hidden');
-                document.getElementById('qTitle').value = "";
-                document.getElementById('qDesc').value = "";
-            }
-        };
-
-        // --- 5. RENDER FEED ---
-        db.collection("quests").orderBy("timestamp", "desc").onSnapshot(snapshot => {
-            const container = document.getElementById('questContainer');
-            container.innerHTML = "";
-            snapshot.forEach(doc => {
-                const q = doc.data();
-                if(q.visibility === 'private' && (!auth.currentUser || auth.currentUser.uid !== q.userId)) return;
-
-                const card = document.createElement('div');
-                card.className = "quest-card p-6 rounded-2xl shadow-sm";
-                card.innerHTML = `
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="text-lg font-bold">${q.title}</h3>
-                        <span class="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-500">By ${q.author}</span>
-                    </div>
-                    <p class="text-gray-600 mb-4">${q.desc}</p>
-                    <div class="flex gap-4 border-t pt-4">
-                        <button onclick="updateVote('${doc.id}', 'likes')" class="text-sm">👍 ${q.likes || 0}</button>
-                        <button onclick="updateVote('${doc.id}', 'dislikes')" class="text-sm">👎 ${q.dislikes || 0}</button>
-                        <button onclick="bookmark('${doc.id}')" class="text-sm ml-auto">🔖 Save</button>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        });
-
-        window.updateVote = (id, type) => {
-            if(!auth.currentUser) return alert("Login to vote!");
-            const ref = db.collection("quests").doc(id);
-            ref.update({ [type]: firebase.firestore.FieldValue.increment(1) });
-        };
-    </script>
 </body>
 </html>
