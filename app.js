@@ -9,8 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- NAVIGATION & OVERLAYS ---
     document.getElementById('navCreateBtn').onclick = async () => {
         const { data: { user } } = await _supabase.auth.getUser();
-        if (!user) vAuth.classList.add('active');
-        else vCreate.classList.add('active');
+        if (!user) {
+            setAuthMode(true);
+            vAuth.classList.add('active');
+        } else {
+            vCreate.classList.add('active');
+        }
     };
 
     document.getElementById('closeAccountBtn').onclick = () => vAccount.classList.remove('active');
@@ -40,27 +44,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function initAuth() {
     const { data: { user } } = await _supabase.auth.getUser();
-    const authBtn = document.getElementById('loginBtn');
+    const authSection = document.getElementById('authSection');
 
     if (user) {
         const { data: profile } = await db.getProfile(user.id);
         const username = profile?.username || 'User';
         
-        // Change "Log In" to the Username
-        authBtn.innerText = `@${username.toUpperCase()}`;
-        authBtn.onclick = () => openAccount(user, username);
+        // This replaces the "Log In" button with just your Username
+        authSection.innerHTML = `
+            <button id="userProfileBtn" class="bg-black text-white px-5 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase hover:bg-gray-800 transition-all active:scale-95">
+                @${username.toUpperCase()}
+            </button>
+        `;
 
-        // Show Debug if it's you
+        // Opens Account Page
+        document.getElementById('userProfileBtn').onclick = () => openAccount(user, username);
+
+        // Debug Check
         if (user.email === 'rkormen80@nn.k12.in.us') {
             document.getElementById('debugMenu').classList.remove('hidden');
         }
 
-        document.getElementById('logoutBtn').onclick = async () => {
+        // Logout Logic inside the Account Page
+        document.getElementById('logoutBtn').onclick = async (e) => {
+            e.preventDefault();
             await _supabase.auth.signOut();
-            window.location.reload();
+            window.location.href = window.location.pathname; // Hard reset to home
         };
     } else {
-        authBtn.onclick = () => document.getElementById('viewAuth').classList.add('active');
+        const loginBtn = document.getElementById('loginBtn');
+        if (loginBtn) {
+            loginBtn.onclick = () => {
+                setAuthMode(false);
+                document.getElementById('viewAuth').classList.add('active');
+            };
+        }
     }
 }
 
@@ -69,42 +87,20 @@ async function openAccount(user, username) {
     document.getElementById('viewAccount').classList.add('active');
     
     const container = document.getElementById('userQuestsContainer');
-    container.innerHTML = `<p class="text-xs font-bold text-gray-300 animate-pulse">Loading your history...</p>`;
+    container.innerHTML = `<p class="text-xs font-bold text-gray-300 animate-pulse">Loading history...</p>`;
     
     const { data: quests } = await _supabase.from('quests').select('*').eq('user_id', user.id);
     
-    container.innerHTML = quests.length ? "" : `<p class="text-sm text-gray-400 py-10">You haven't posted any quests yet.</p>`;
+    container.innerHTML = quests.length ? "" : `<p class="text-sm text-gray-400 py-10">No quests posted yet.</p>`;
     quests.forEach(q => {
         const item = document.createElement('div');
         item.className = "p-5 bg-gray-50 rounded-2xl flex justify-between items-center border border-transparent hover:border-indigo-100 transition-all";
-        item.innerHTML = `<span class="font-bold text-sm">${q.title}</span><span class="text-[10px] font-black text-indigo-400">👍 ${q.likes}</span>`;
+        item.innerHTML = `
+            <span class="font-bold text-sm">${q.title}</span>
+            <span class="text-[10px] font-black text-indigo-400">👍 ${q.likes}</span>
+        `;
         container.appendChild(item);
     });
 }
 
-// --- UPDATED VOTING LOGIC (One vote per account) ---
-window.handleVote = async (id, type) => {
-    const { data: { user } } = await _supabase.auth.getUser();
-    if (!user) return document.getElementById('viewAuth').classList.add('active');
-
-    const key = `v_${user.id}_${id}`;
-    const previousVote = localStorage.getItem(key); // Stores 'likes' or 'dislikes'
-    const { data: q } = await _supabase.from('quests').select('likes, dislikes').eq('id', id).single();
-    
-    let updates = { likes: q.likes, dislikes: q.dislikes };
-
-    if (previousVote === type) {
-        // Toggle off if clicking the same button
-        updates[type] = Math.max(0, updates[type] - 1);
-        localStorage.removeItem(key);
-    } else {
-        // If they had a previous different vote, remove that first
-        if (previousVote) updates[previousVote] = Math.max(0, updates[previousVote] - 1);
-        // Add the new vote
-        updates[type]++;
-        localStorage.setItem(key, type);
-    }
-
-    await _supabase.from('quests').update(updates).eq('id', id);
-    renderFeed();
-};
+// Keep your existing renderFeed, handleVote, and handleBookmark below...
