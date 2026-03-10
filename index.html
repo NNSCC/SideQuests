@@ -9,13 +9,6 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #111827; }
         
-        .quest-card { 
-            background: white; 
-            border: 1px solid #e5e7eb; 
-            border-radius: 24px; 
-            transition: transform 0.2s ease;
-        }
-
         .view-overlay { 
             position: fixed;
             inset: 0;
@@ -24,24 +17,22 @@
             display: none; 
             flex-direction: column;
         }
-
         .view-overlay.active { display: flex; }
-        input:focus, textarea:focus { outline: none; }
-        .hidden { display: none !important; }
+        .quest-card { background: white; border: 1px solid #e5e7eb; border-radius: 24px; }
     </style>
 </head>
 <body class="antialiased">
 
     <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
-        <div class="max-w-xl mx-auto px-6 py-4 flex justify-between items-center w-full">
-            <button id="navCreateBtn" class="text-indigo-600 font-bold text-xs tracking-tight uppercase hover:opacity-70 transition">
+        <div class="max-w-xl mx-auto px-6 py-4 flex justify-between items-center">
+            <button id="navCreateBtn" class="text-indigo-600 font-bold text-xs uppercase tracking-tight">
                 + Create
             </button>
             
             <h1 class="text-xl font-black tracking-tighter italic">SIDE QUEST</h1>
             
-            <div id="authSection" class="flex items-center">
-                <button id="loginBtn" class="bg-black text-white px-5 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase transition">
+            <div id="authSection">
+                <button id="loginBtn" class="bg-black text-white px-5 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase">
                     Log In
                 </button>
             </div>
@@ -50,35 +41,9 @@
 
     <main class="max-w-xl mx-auto py-10 px-6">
         <div id="questContainer" class="space-y-8">
-            <p class="text-center text-gray-400 py-20 text-[10px] font-bold uppercase tracking-widest">Loading Feed...</p>
+            <p class="text-center text-gray-400 py-20 text-[10px] font-bold uppercase tracking-widest">Loading...</p>
         </div>
     </main>
-
-    <section id="viewAccount" class="view-overlay">
-        <div class="max-w-xl mx-auto w-full h-full px-6 flex flex-col">
-            <div class="flex justify-between items-center py-6">
-                <button id="closeAccountBtn" class="text-gray-400 font-black text-[10px] tracking-widest uppercase">← Back</button>
-                <span id="accUsername" class="text-[10px] font-black text-indigo-600 tracking-widest uppercase">@User</span>
-                <div class="w-8"></div>
-            </div>
-
-            <div id="modSection" class="hidden mb-8 p-6 bg-red-50 rounded-3xl border border-red-100">
-                <h3 class="text-red-600 font-black text-[10px] tracking-widest mb-4 uppercase text-center">Admin Debug (@Splarg)</h3>
-                <div class="flex gap-2">
-                    <button id="modResetVotes" class="flex-1 bg-white text-red-500 py-3 rounded-xl font-bold text-[10px] uppercase border border-red-100">Reset Votes</button>
-                    <button id="modDeleteAll" class="flex-1 bg-red-600 text-white py-3 rounded-xl font-bold text-[10px] uppercase">Wipe Quests</button>
-                </div>
-            </div>
-
-            <div class="flex-grow overflow-y-auto pt-4">
-                <h2 class="text-3xl font-black mb-6 tracking-tighter">My Activity</h2>
-                <div id="userQuestsContainer" class="space-y-4"></div>
-            </div>
-            <div class="pb-10">
-                <button id="logoutBtn" class="w-full border-2 border-gray-100 text-gray-400 p-4 rounded-2xl font-bold text-xs uppercase tracking-widest">Sign Out</button>
-            </div>
-        </div>
-    </section>
 
     <section id="viewCreate" class="view-overlay">
         <div class="max-w-xl mx-auto w-full h-full px-6 flex flex-col">
@@ -88,8 +53,8 @@
                 <div class="w-8"></div>
             </div>
             <div class="flex-grow space-y-6 pt-10">
-                <input type="text" id="qTitle" placeholder="Title" class="w-full text-4xl font-black p-0 border-none">
-                <textarea id="qDesc" placeholder="Description" class="w-full text-xl p-0 border-none h-64 resize-none leading-relaxed"></textarea>
+                <input type="text" id="qTitle" placeholder="Title" class="w-full text-4xl font-black border-none outline-none">
+                <textarea id="qDesc" placeholder="Description" class="w-full text-xl border-none outline-none h-64 resize-none"></textarea>
             </div>
             <div class="pb-10">
                 <button id="publishBtn" class="w-full bg-black text-white p-5 rounded-2xl font-bold text-lg">Publish</button>
@@ -107,14 +72,14 @@
             <div class="flex-grow pt-10 space-y-8">
                 <h2 id="authHeading" class="text-5xl font-black tracking-tighter">Login</h2>
                 <div id="usernameField" class="hidden">
-                    <input type="text" id="authUsername" placeholder="Username" class="w-full text-xl font-bold border-b border-gray-100 pb-2">
+                    <input type="text" id="authUsername" placeholder="Username" class="w-full text-xl font-bold border-b border-gray-100 pb-2 outline-none">
                 </div>
-                <input type="email" id="authEmail" placeholder="Email" class="w-full text-xl font-bold border-b border-gray-100 pb-2">
-                <input type="password" id="authPassword" placeholder="Password" class="w-full text-xl font-bold border-b border-gray-100 pb-2">
+                <input type="email" id="authEmail" placeholder="Email" class="w-full text-xl font-bold border-b border-gray-100 pb-2 outline-none">
+                <input type="password" id="authPassword" placeholder="Password" class="w-full text-xl font-bold border-b border-gray-100 pb-2 outline-none">
             </div>
             <div class="pb-10 text-center">
                 <button id="authSubmitBtn" class="w-full bg-black text-white p-5 rounded-2xl font-bold text-lg">Enter</button>
-                <button id="toggleAuthMode" class="mt-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-black transition">Need an account? Sign Up</button>
+                <button id="toggleAuthMode" class="mt-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sign Up Instead</button>
             </div>
         </div>
     </section>
