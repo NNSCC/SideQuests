@@ -1,1 +1,162 @@
-kk
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Side Quest | Feed</title>
+    <style>
+        :root {
+            --accent: #00f2ff; /* Cyber Cyan */
+            --bg: #050505;
+            --card-bg: #111111;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* The Feed Container */
+        #feed {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Quest Cards */
+        .quest-card {
+            background: var(--card-bg);
+            border: 1px solid #222;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quest-card:active {
+            transform: scale(0.98);
+        }
+
+        .quest-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--accent);
+        }
+
+        .quest-desc {
+            font-size: 1rem;
+            line-height: 1.4;
+            opacity: 0.8;
+        }
+
+        .quest-meta {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            opacity: 0.5;
+        }
+
+        /* Navbar for Uploading */
+        .nav {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid #222;
+        }
+
+        input {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            width: 70%;
+        }
+
+        button {
+            background: var(--accent);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-left: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav">
+        <input type="text" id="questInput" placeholder="Submit a side quest...">
+        <button id="postBtn">SEND</button>
+    </div>
+
+    <div id="feed">
+        </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            // CEO: Paste your Firebase config here
+            apiKey: "YOUR_API_KEY",
+            projectId: "YOUR_PROJECT_ID",
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // UPLOAD LOGIC
+        document.getElementById('postBtn').onclick = async () => {
+            const text = document.getElementById('questInput').value;
+            if(text) {
+                await db.collection("quests").add({
+                    text: text,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    likes: 0
+                });
+                document.getElementById('questInput').value = "";
+            }
+        };
+
+        // REAL-TIME SCROLLABLE FEED
+        db.collection("quests").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+            const feed = document.getElementById('feed');
+            feed.innerHTML = ""; // Refresh feed
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                const card = document.createElement('div');
+                card.className = 'quest-card';
+                card.innerHTML = `
+                    <div class="quest-title">NEW QUEST</div>
+                    <div class="quest-desc">${data.text}</div>
+                    <div class="quest-meta">
+                        <span>Just now</span>
+                        <span>0 ACCEPTS</span>
+                    </div>
+                `;
+                feed.appendChild(card);
+            });
+        });
+    </script>
+</body>
+</html>
