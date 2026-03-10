@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://static1.codehs.com/cdn/chsfirebase/latest/chsfirebase.min.js">
+        </script>
+    </head>
+    <body>
+        <h1>Set and load values from a database!</h1>
+        <p>Hit "get from DB" to get the data</p>
+        <p>Hit "set in DB" to set the data with the value in the text box</p>
+        <p>current value: <span id="db-value"></span></p>
+        <textarea id="set-value" value="" placeholder="enter a value"></textarea>
+        <button onclick="setInDB()">set in DB</button>
+        <button onclick="getFromDB()">get from DB</button>
+
+
+        <script>
+        firebase.initialize({
+            projectName: 'new_project'
+        });
+
+        function getFromDB() {
+            firebase.database().ref().on('value', function(result) {
+                document.querySelector('#db-value').innerHTML = result;
+            });
+        }
+
+        function setInDB() {
+            var value = document.querySelector('#set-value').value;
+            firebase.database().ref().set(value);
+        }
+        </script>
+    </body>
+</html>
