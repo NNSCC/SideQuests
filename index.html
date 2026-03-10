@@ -39,25 +39,26 @@
             transform: scale(1);
         }
 
-        .btn-primary {
-            transition: all 0.2s ease;
-        }
-
-        .btn-primary:active {
-            transform: scale(0.95);
-        }
-
+        .btn-primary { transition: all 0.2s ease; }
+        .btn-primary:active { transform: scale(0.95); }
         input:focus, textarea:focus { outline: none; }
         .hidden { display: none !important; }
+        
+        .mod-panel { border: 2px dashed #ef4444; background: #fef2f2; }
     </style>
 </head>
 <body class="antialiased">
 
     <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4">
         <div class="max-w-5xl mx-auto flex justify-between items-center">
-            <button id="navCreateBtn" class="text-indigo-600 font-bold text-sm tracking-tight hover:text-indigo-800 transition-colors">
-                + CREATE QUEST
-            </button>
+            <div class="flex gap-4 items-center">
+                <button id="navCreateBtn" class="text-indigo-600 font-bold text-sm tracking-tight hover:text-indigo-800 transition-colors">
+                    + CREATE
+                </button>
+                <button id="adminBtn" class="hidden text-red-500 font-bold text-xs border border-red-200 px-2 py-1 rounded">
+                    MOD TOOLS
+                </button>
+            </div>
             <h1 class="text-xl font-black tracking-tighter italic">SIDE QUEST</h1>
             <div id="authSection">
                 <button id="loginBtn" class="btn-primary bg-black text-white px-5 py-2 rounded-full text-xs font-bold tracking-widest uppercase">
@@ -76,11 +77,12 @@
     <section id="viewCreate" class="view-overlay flex items-center justify-center p-6">
         <div class="max-w-lg w-full h-full flex flex-col">
             <div class="flex justify-between items-center mb-10">
-                <button id="closeCreateBtn" class="text-gray-400 hover:text-black">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="6 18L18 6M6 6l12 12" /></svg>
+                <button class="close-trigger text-gray-400 hover:text-black flex items-center gap-2 text-xs font-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                    BACK
                 </button>
                 <span class="text-xs font-bold text-gray-300 tracking-widest uppercase">New Quest</span>
-                <div class="w-6"></div>
+                <div class="w-10"></div>
             </div>
             <div class="space-y-6 flex-grow">
                 <input type="text" id="qTitle" placeholder="Quest Title" class="w-full text-3xl font-black p-0 border-none placeholder:text-gray-200">
@@ -99,11 +101,12 @@
     <section id="viewAuth" class="view-overlay flex items-center justify-center p-6">
         <div class="max-w-lg w-full h-full flex flex-col">
             <div class="flex justify-between items-center mb-10">
-                <button id="closeAuthBtn" class="text-gray-400 hover:text-black">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="6 18L18 6M6 6l12 12" /></svg>
+                <button class="close-trigger text-gray-400 hover:text-black flex items-center gap-2 text-xs font-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                    BACK
                 </button>
                 <span id="authModeTitle" class="text-[10px] font-bold text-gray-300 tracking-widest uppercase">Portal</span>
-                <div class="w-6"></div>
+                <div class="w-10"></div>
             </div>
             <h2 id="authHeading" class="text-4xl font-black mb-8 tracking-tighter text-indigo-600">Login</h2>
             <div class="space-y-6 flex-grow">
@@ -114,6 +117,21 @@
             <div class="pb-10">
                 <button id="authSubmitBtn" class="btn-primary w-full bg-black text-white p-5 rounded-2xl font-bold text-lg">Enter</button>
                 <button id="toggleAuthMode" class="w-full mt-4 text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Need an account? Sign Up</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="viewAdmin" class="view-overlay flex items-center justify-center p-6">
+        <div class="max-w-lg w-full h-full flex flex-col">
+             <div class="flex justify-between items-center mb-10">
+                <button id="closeAdminBtn" class="text-gray-400 hover:text-black flex items-center gap-2 text-xs font-bold">BACK</button>
+                <span class="text-xs font-bold text-red-400 tracking-widest uppercase">MODERATOR PANEL</span>
+                <div class="w-10"></div>
+            </div>
+            <div class="mod-panel p-6 rounded-2xl space-y-4">
+                <h3 class="font-black text-red-600">DEBUG TOOLS (@Splarg)</h3>
+                <button id="resetVotesBtn" class="w-full bg-white border border-red-200 text-red-500 py-3 rounded-xl font-bold text-sm">RESET ALL LIKES/DISLIKES</button>
+                <button id="deleteAllBtn" class="w-full bg-red-600 text-white py-3 rounded-xl font-bold text-sm">DELETE ALL QUESTS</button>
             </div>
         </div>
     </section>
