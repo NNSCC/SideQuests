@@ -7,151 +7,99 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #111827; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #111827; }
         
+        /* Centered Container */
+        .content-shell { max-width: 36rem; margin: 0 auto; width: 100%; padding: 0 1rem; }
+
         .quest-card { 
             background: white; 
             border: 1px solid #e5e7eb; 
             border-radius: 24px; 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-        }
-        
-        .quest-card:hover { 
-            border-color: #6366f1; 
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); 
+            padding: 2rem;
+            transition: transform 0.2s ease;
         }
 
+        /* Fixed Overlay Logic */
         .view-overlay { 
-            transition: all 0.25s ease-out; 
-            opacity: 0;
-            pointer-events: none;
-            background: white;
             position: fixed;
             inset: 0;
+            background: white;
             z-index: 100;
-            display: flex;
+            display: none; 
             flex-direction: column;
+            padding: 1.5rem;
         }
 
-        .view-overlay.active { 
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .view-overlay.active { display: flex; }
 
-        .btn-primary { transition: all 0.2s ease; }
-        .btn-primary:active { transform: scale(0.95); }
         input:focus, textarea:focus { outline: none; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body class="antialiased">
 
-    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4">
-        <div class="max-w-5xl mx-auto flex justify-between items-center w-full">
-            <div class="flex items-center gap-4">
-                <button id="navCreateBtn" class="text-indigo-600 font-bold text-sm tracking-tight hover:text-indigo-800 transition">
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 px-4 py-4">
+        <div class="max-w-5xl mx-auto grid grid-cols-3 items-center">
+            <div class="flex justify-start">
+                <button id="navCreateBtn" class="text-indigo-600 font-bold text-xs tracking-tight hover:opacity-70 transition">
                     + CREATE
-                </button>
-                <button id="adminBtn" class="hidden text-red-500 font-bold text-[10px] border border-red-100 px-2 py-1 rounded uppercase tracking-widest">
-                    MOD TOOLS
                 </button>
             </div>
 
-            <h1 class="text-xl font-black tracking-tighter italic absolute left-1/2 -translate-x-1/2">SIDE QUEST</h1>
+            <div class="flex justify-center">
+                <h1 class="text-xl font-black tracking-tighter italic">SIDE QUEST</h1>
+            </div>
             
-            <div id="authSection" class="flex items-center gap-4">
-                <button id="loginBtn" class="btn-primary bg-black text-white px-5 py-2 rounded-full text-xs font-bold tracking-widest uppercase">
+            <div id="authSection" class="flex justify-end gap-3">
+                <button id="loginBtn" class="bg-black text-white px-4 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase hover:bg-gray-800 transition">
                     LOG IN
                 </button>
             </div>
         </div>
     </nav>
 
-    <main id="viewFeed" class="max-w-xl mx-auto py-10 px-4">
+    <main id="viewFeed" class="content-shell py-10">
         <div id="questContainer" class="space-y-8">
-            <div class="text-center py-20 text-gray-300 animate-pulse font-bold uppercase tracking-widest text-xs">
-                Syncing Universe...
-            </div>
+            <p class="text-center text-gray-400 py-20 font-bold uppercase tracking-widest text-[10px]">Syncing Universe...</p>
         </div>
     </main>
 
-    <section id="viewCreate" class="view-overlay p-6">
-        <div class="max-w-lg mx-auto w-full h-full flex flex-col">
-            <div class="flex justify-between items-center mb-10">
-                <button class="btn-back text-gray-400 hover:text-black font-black text-xs tracking-widest flex items-center gap-1 transition">
-                    ← BACK
-                </button>
+    <section id="viewCreate" class="view-overlay">
+        <div class="content-shell h-full flex flex-col">
+            <div class="flex justify-between items-center py-6">
+                <button class="btn-back text-gray-400 font-black text-[10px] tracking-widest">← BACK</button>
                 <span class="text-[10px] font-bold text-gray-300 tracking-widest uppercase">New Quest</span>
-                <div class="w-10"></div>
+                <div class="w-8"></div>
             </div>
-            <div class="space-y-6 flex-grow">
-                <input type="text" id="qTitle" placeholder="Quest Title" class="w-full text-4xl font-black p-0 border-none placeholder:text-gray-100">
-                <textarea id="qDesc" placeholder="Describe the mission..." class="w-full text-xl p-0 border-none h-60 resize-none placeholder:text-gray-100 leading-relaxed"></textarea>
-                <div class="flex items-center gap-6 py-6 border-t border-gray-50">
-                    <label class="flex items-center gap-2 cursor-pointer text-sm font-bold">
-                        <input type="radio" name="visibility" value="public" checked class="accent-black"> Public
-                    </label>
-                    <label class="flex items-center gap-2 cursor-pointer text-sm font-bold">
-                        <input type="radio" name="visibility" value="private" class="accent-black"> Private
-                    </label>
-                </div>
+            <div class="flex-grow space-y-6 pt-10">
+                <input type="text" id="qTitle" placeholder="Title" class="w-full text-4xl font-black p-0 border-none">
+                <textarea id="qDesc" placeholder="Description" class="w-full text-xl p-0 border-none h-48 resize-none"></textarea>
             </div>
             <div class="pb-10">
-                <button id="publishBtn" class="btn-primary w-full bg-black text-white p-6 rounded-3xl font-bold text-xl shadow-xl shadow-indigo-100">Publish Quest</button>
+                <button id="publishBtn" class="w-full bg-black text-white p-5 rounded-2xl font-bold text-lg">Publish</button>
             </div>
         </div>
     </section>
 
-    <section id="viewAuth" class="view-overlay p-6">
-        <div class="max-w-lg mx-auto w-full h-full flex flex-col">
-            <div class="flex justify-between items-center mb-10">
-                <button class="btn-back text-gray-400 hover:text-black font-black text-xs tracking-widest">← BACK</button>
-                <span id="authModeTitle" class="text-[10px] font-bold text-gray-300 tracking-widest uppercase">Identity Check</span>
-                <div class="w-10"></div>
+    <section id="viewAuth" class="view-overlay">
+        <div class="content-shell h-full flex flex-col">
+            <div class="flex justify-between items-center py-6">
+                <button class="btn-back text-gray-400 font-black text-[10px] tracking-widest">← BACK</button>
+                <span class="text-[10px] font-bold text-gray-300 tracking-widest uppercase">Identity</span>
+                <div class="w-8"></div>
             </div>
-            <h2 id="authHeading" class="text-5xl font-black mb-12 tracking-tighter">Login</h2>
-            <div class="space-y-8 flex-grow">
+            <div class="flex-grow pt-10 space-y-8">
+                <h2 id="authHeading" class="text-5xl font-black tracking-tighter">Login</h2>
                 <div id="usernameField" class="hidden">
-                    <label class="text-[10px] font-black text-gray-300 uppercase tracking-widest">Username</label>
-                    <input type="text" id="authUsername" class="w-full text-2xl font-bold border-b-2 border-gray-100 pb-2 focus:border-black transition-colors">
+                    <input type="text" id="authUsername" placeholder="Username" class="w-full text-xl font-bold border-b border-gray-100 pb-2">
                 </div>
-                <div>
-                    <label class="text-[10px] font-black text-gray-300 uppercase tracking-widest">Email Address</label>
-                    <input type="email" id="authEmail" class="w-full text-2xl font-bold border-b-2 border-gray-100 pb-2 focus:border-black transition-colors">
-                </div>
-                <div>
-                    <label class="text-[10px] font-black text-gray-300 uppercase tracking-widest">Secure Password</label>
-                    <input type="password" id="authPassword" class="w-full text-2xl font-bold border-b-2 border-gray-100 pb-2 focus:border-black transition-colors">
-                </div>
+                <input type="email" id="authEmail" placeholder="Email" class="w-full text-xl font-bold border-b border-gray-100 pb-2">
+                <input type="password" id="authPassword" placeholder="Password" class="w-full text-xl font-bold border-b border-gray-100 pb-2">
             </div>
             <div class="pb-10">
-                <button id="authSubmitBtn" class="btn-primary w-full bg-black text-white p-6 rounded-3xl font-bold text-xl">Confirm</button>
-                <button id="toggleAuthMode" class="w-full mt-6 text-xs font-bold text-gray-400 uppercase tracking-widest hover:text-black transition">Switch to Sign Up</button>
-            </div>
-        </div>
-    </section>
-
-    <section id="viewAccount" class="view-overlay p-6">
-        <div class="max-w-lg mx-auto w-full h-full flex flex-col">
-            <div class="flex justify-between items-center mb-10">
-                <button id="closeAccountBtn" class="text-gray-400 hover:text-black font-black text-xs tracking-widest">← BACK</button>
-                <span id="profileUsernameDisplay" class="text-[10px] font-bold text-indigo-600 tracking-widest uppercase">@User</span>
-                <div class="w-10"></div>
-            </div>
-            
-            <div id="modSection" class="hidden mb-8 p-6 bg-red-50 rounded-3xl border-2 border-red-100">
-                <h3 class="text-red-600 font-black text-xs tracking-widest mb-4">MODERATOR CONTROLS</h3>
-                <div class="flex gap-2">
-                    <button id="modResetVotes" class="flex-1 bg-white text-red-500 p-3 rounded-xl font-bold text-[10px] border border-red-100 uppercase">Reset Votes</button>
-                    <button id="modDeleteAll" class="flex-1 bg-red-600 text-white p-3 rounded-xl font-bold text-[10px] uppercase">Wipe Quests</button>
-                </div>
-            </div>
-
-            <div class="flex-grow overflow-y-auto">
-                <h2 class="text-3xl font-black mb-6 tracking-tighter">Your Activity</h2>
-                <div id="userQuestsContainer" class="space-y-4">
-                    </div>
+                <button id="authSubmitBtn" class="w-full bg-black text-white p-5 rounded-2xl font-bold text-lg">Enter</button>
+                <button id="toggleAuthMode" class="w-full mt-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Need an account? Sign Up</button>
             </div>
         </div>
     </section>
