@@ -3,24 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Side Quest | Minimal</title>
+    <title>Side Quest</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #111827; }
         
-        /* Centered Container */
-        .content-shell { max-width: 36rem; margin: 0 auto; width: 100%; padding: 0 1rem; }
-
         .quest-card { 
             background: white; 
             border: 1px solid #e5e7eb; 
             border-radius: 24px; 
-            padding: 2rem;
             transition: transform 0.2s ease;
         }
 
-        /* Fixed Overlay Logic */
         .view-overlay { 
             position: fixed;
             inset: 0;
@@ -28,53 +23,44 @@
             z-index: 100;
             display: none; 
             flex-direction: column;
-            padding: 1.5rem;
         }
 
         .view-overlay.active { display: flex; }
-
         input:focus, textarea:focus { outline: none; }
-        .hidden { display: none !important; }
     </style>
 </head>
 <body class="antialiased">
 
-    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 px-4 py-4">
-        <div class="max-w-5xl mx-auto grid grid-cols-3 items-center">
-            <div class="flex justify-start">
-                <button id="navCreateBtn" class="text-indigo-600 font-bold text-xs tracking-tight hover:opacity-70 transition">
-                    + CREATE
-                </button>
-            </div>
-
-            <div class="flex justify-center">
-                <h1 class="text-xl font-black tracking-tighter italic">SIDE QUEST</h1>
-            </div>
-            
-            <div id="authSection" class="flex justify-end gap-3">
-                <button id="loginBtn" class="bg-black text-white px-4 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase hover:bg-gray-800 transition">
-                    LOG IN
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-xl mx-auto px-6 py-4 flex justify-between items-center">
+            <button id="navCreateBtn" class="text-indigo-600 font-bold text-xs tracking-tight uppercase hover:opacity-70 transition">
+                + Create
+            </button>
+            <h1 class="text-xl font-black tracking-tighter italic">SIDE QUEST</h1>
+            <div id="authSection">
+                <button id="loginBtn" class="bg-black text-white px-5 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase transition">
+                    Log In
                 </button>
             </div>
         </div>
     </nav>
 
-    <main id="viewFeed" class="content-shell py-10">
+    <main class="max-w-xl mx-auto py-10 px-6">
         <div id="questContainer" class="space-y-8">
-            <p class="text-center text-gray-400 py-20 font-bold uppercase tracking-widest text-[10px]">Syncing Universe...</p>
+            <p class="text-center text-gray-400 py-20 text-[10px] font-bold uppercase tracking-widest">Loading Feed...</p>
         </div>
     </main>
 
     <section id="viewCreate" class="view-overlay">
-        <div class="content-shell h-full flex flex-col">
+        <div class="max-w-xl mx-auto w-full h-full px-6 flex flex-col">
             <div class="flex justify-between items-center py-6">
-                <button class="btn-back text-gray-400 font-black text-[10px] tracking-widest">← BACK</button>
+                <button class="btn-back text-gray-400 font-black text-[10px] tracking-widest uppercase">← Back</button>
                 <span class="text-[10px] font-bold text-gray-300 tracking-widest uppercase">New Quest</span>
                 <div class="w-8"></div>
             </div>
             <div class="flex-grow space-y-6 pt-10">
                 <input type="text" id="qTitle" placeholder="Title" class="w-full text-4xl font-black p-0 border-none">
-                <textarea id="qDesc" placeholder="Description" class="w-full text-xl p-0 border-none h-48 resize-none"></textarea>
+                <textarea id="qDesc" placeholder="Description" class="w-full text-xl p-0 border-none h-64 resize-none leading-relaxed"></textarea>
             </div>
             <div class="pb-10">
                 <button id="publishBtn" class="w-full bg-black text-white p-5 rounded-2xl font-bold text-lg">Publish</button>
@@ -83,9 +69,9 @@
     </section>
 
     <section id="viewAuth" class="view-overlay">
-        <div class="content-shell h-full flex flex-col">
+        <div class="max-w-xl mx-auto w-full h-full px-6 flex flex-col">
             <div class="flex justify-between items-center py-6">
-                <button class="btn-back text-gray-400 font-black text-[10px] tracking-widest">← BACK</button>
+                <button class="btn-back text-gray-400 font-black text-[10px] tracking-widest uppercase">← Back</button>
                 <span class="text-[10px] font-bold text-gray-300 tracking-widest uppercase">Identity</span>
                 <div class="w-8"></div>
             </div>
@@ -97,9 +83,9 @@
                 <input type="email" id="authEmail" placeholder="Email" class="w-full text-xl font-bold border-b border-gray-100 pb-2">
                 <input type="password" id="authPassword" placeholder="Password" class="w-full text-xl font-bold border-b border-gray-100 pb-2">
             </div>
-            <div class="pb-10">
+            <div class="pb-10 text-center">
                 <button id="authSubmitBtn" class="w-full bg-black text-white p-5 rounded-2xl font-bold text-lg">Enter</button>
-                <button id="toggleAuthMode" class="w-full mt-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Need an account? Sign Up</button>
+                <button id="toggleAuthMode" class="mt-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-black transition">Need an account? Sign Up</button>
             </div>
         </div>
     </section>
