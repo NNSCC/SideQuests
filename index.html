@@ -9,30 +9,71 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #111827; }
         
+        /* Smooth Overlay Animation */
         .view-overlay { 
             position: fixed;
             inset: 0;
             background: white;
             z-index: 100;
-            display: none; 
+            display: flex; 
             flex-direction: column;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .view-overlay.active { display: flex; }
-        .quest-card { background: white; border: 1px solid #e5e7eb; border-radius: 24px; }
+
+        .view-overlay.active { 
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .quest-card { 
+            background: white; 
+            border: 1px solid #e5e7eb; 
+            border-radius: 24px; 
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .quest-card:hover {
+            border-color: #6366f1;
+            transform: translateY(-2px);
+        }
+
+        /* Hover Highlight Effect for Buttons */
+        .btn-hover {
+            transition: all 0.2s ease;
+            border-radius: 8px;
+        }
+
+        .btn-hover:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            transform: scale(1.02);
+        }
+
+        .btn-hover:active {
+            transform: scale(0.98);
+        }
+
+        /* Input focus transitions */
+        input, textarea {
+            transition: border-color 0.2s ease;
+        }
     </style>
 </head>
 <body class="antialiased">
 
     <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
         <div class="max-w-xl mx-auto px-6 py-4 flex justify-between items-center">
-            <button id="navCreateBtn" class="text-indigo-600 font-bold text-xs uppercase tracking-tight">
+            <button id="navCreateBtn" class="btn-hover text-indigo-600 font-bold text-xs uppercase tracking-tight px-3 py-2">
                 + Create
             </button>
             
-            <h1 class="text-xl font-black tracking-tighter italic">SIDE QUEST</h1>
+            <h1 class="text-xl font-black tracking-tighter italic cursor-default">SIDE QUEST</h1>
             
             <div id="authSection">
-                <button id="loginBtn" class="bg-black text-white px-5 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase">
+                <button id="loginBtn" class="bg-black text-white px-5 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase hover:bg-gray-800 transition-all active:scale-95">
                     Log In
                 </button>
             </div>
@@ -41,23 +82,23 @@
 
     <main class="max-w-xl mx-auto py-10 px-6">
         <div id="questContainer" class="space-y-8">
-            <p class="text-center text-gray-400 py-20 text-[10px] font-bold uppercase tracking-widest">Loading...</p>
+            <p class="text-center text-gray-400 py-20 text-[10px] font-bold uppercase tracking-widest animate-pulse">Syncing...</p>
         </div>
     </main>
 
     <section id="viewCreate" class="view-overlay">
         <div class="max-w-xl mx-auto w-full h-full px-6 flex flex-col">
             <div class="flex justify-between items-center py-6">
-                <button class="btn-back text-gray-400 font-black text-[10px] tracking-widest uppercase">← Back</button>
+                <button class="btn-back btn-hover text-gray-400 font-black text-[10px] tracking-widest uppercase px-3 py-2">← Back</button>
                 <span class="text-[10px] font-bold text-gray-300 tracking-widest uppercase">New Quest</span>
                 <div class="w-8"></div>
             </div>
             <div class="flex-grow space-y-6 pt-10">
-                <input type="text" id="qTitle" placeholder="Title" class="w-full text-4xl font-black border-none outline-none">
-                <textarea id="qDesc" placeholder="Description" class="w-full text-xl border-none outline-none h-64 resize-none"></textarea>
+                <input type="text" id="qTitle" placeholder="Title" class="w-full text-4xl font-black border-none outline-none placeholder:text-gray-200">
+                <textarea id="qDesc" placeholder="Description" class="w-full text-xl border-none outline-none h-64 resize-none placeholder:text-gray-200 leading-relaxed"></textarea>
             </div>
             <div class="pb-10">
-                <button id="publishBtn" class="w-full bg-black text-white p-5 rounded-2xl font-bold text-lg">Publish</button>
+                <button id="publishBtn" class="w-full bg-black text-white p-5 rounded-2xl font-bold text-lg hover:bg-gray-800 transition-colors">Publish</button>
             </div>
         </div>
     </section>
@@ -65,21 +106,21 @@
     <section id="viewAuth" class="view-overlay">
         <div class="max-w-xl mx-auto w-full h-full px-6 flex flex-col">
             <div class="flex justify-between items-center py-6">
-                <button class="btn-back text-gray-400 font-black text-[10px] tracking-widest uppercase">← Back</button>
+                <button class="btn-back btn-hover text-gray-400 font-black text-[10px] tracking-widest uppercase px-3 py-2">← Back</button>
                 <span class="text-[10px] font-bold text-gray-300 tracking-widest uppercase">Identity</span>
                 <div class="w-8"></div>
             </div>
             <div class="flex-grow pt-10 space-y-8">
                 <h2 id="authHeading" class="text-5xl font-black tracking-tighter">Login</h2>
                 <div id="usernameField" class="hidden">
-                    <input type="text" id="authUsername" placeholder="Username" class="w-full text-xl font-bold border-b border-gray-100 pb-2 outline-none">
+                    <input type="text" id="authUsername" placeholder="Username" class="w-full text-xl font-bold border-b border-gray-100 pb-2 outline-none focus:border-black">
                 </div>
-                <input type="email" id="authEmail" placeholder="Email" class="w-full text-xl font-bold border-b border-gray-100 pb-2 outline-none">
-                <input type="password" id="authPassword" placeholder="Password" class="w-full text-xl font-bold border-b border-gray-100 pb-2 outline-none">
+                <input type="email" id="authEmail" placeholder="Email" class="w-full text-xl font-bold border-b border-gray-100 pb-2 outline-none focus:border-black">
+                <input type="password" id="authPassword" placeholder="Password" class="w-full text-xl font-bold border-b border-gray-100 pb-2 outline-none focus:border-black">
             </div>
             <div class="pb-10 text-center">
-                <button id="authSubmitBtn" class="w-full bg-black text-white p-5 rounded-2xl font-bold text-lg">Enter</button>
-                <button id="toggleAuthMode" class="mt-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sign Up Instead</button>
+                <button id="authSubmitBtn" class="w-full bg-black text-white p-5 rounded-2xl font-bold text-lg hover:bg-gray-800 transition-colors">Enter</button>
+                <button id="toggleAuthMode" class="mt-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-black transition-colors">Sign Up Instead</button>
             </div>
         </div>
     </section>
