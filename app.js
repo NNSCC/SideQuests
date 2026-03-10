@@ -5,8 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const vAuth = document.getElementById('viewAuth');
     const vCreate = document.getElementById('viewCreate');
     const vAccount = document.getElementById('viewAccount');
+    let isSignUpMode = false;
 
-    // --- NAVIGATION & OVERLAYS ---
+    // --- OVERLAY CONTROLS ---
     document.getElementById('navCreateBtn').onclick = async () => {
         const { data: { user } } = await _supabase.auth.getUser();
         if (!user) {
@@ -17,14 +18,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    document.getElementById('closeAccountBtn').onclick = () => vAccount.classList.remove('active');
-
+    // Global Back Button Logic (Fixed)
     document.querySelectorAll('.btn-back').forEach(btn => {
         btn.onclick = () => {
             vAuth.classList.remove('active');
             vCreate.classList.remove('active');
         };
     });
+
+    document.getElementById('closeAccountBtn').onclick = () => vAccount.classList.remove('active');
+
+    // --- AUTH LOGIC (Fixed) ---
+    function setAuthMode(signUp) {
+        isSignUpMode = signUp;
+        document.getElementById('authHeading').innerText = signUp ? "Sign Up" : "Login";
+        document.getElementById('authSubmitBtn').innerText = signUp ? "Create Account" : "Welcome Back";
+        document.getElementById('usernameField').classList.toggle('hidden', !signUp);
+        document.getElementById('toggleAuthMode').innerText = signUp ? "Have an account? Log In" : "New here? Sign Up";
+    }
+
+    document.getElementById('toggleAuthMode').onclick = () => setAuthMode(!isSignUpMode);
+
+    document.getElementById('authSubmitBtn').onclick = async () => {
+        const email = document.getElementById('authEmail').value;
+        const password = document.getElementById('authPassword').value;
+        const username = document.getElementById('authUsername').value;
+
+        if (isSignUpMode) {
+            const { data, error } = await _supabase.auth.signUp({ email, password });
+            if (error) return alert(error.message);
+            if (data.user && username) await db.setUsername(data.user.id, username);
+            alert("Check your email for the confirmation link!");
+            setAuthMode(false);
+        } else {
+            const { error } = await _supabase.auth.signInWithPassword({ email, password });
+            if (error) alert(error.message);
+            else window.location.reload();
+        }
+    };
 
     // --- DEBUG ACTIONS ---
     document.getElementById('debugResetVotes').onclick = async () => {
@@ -50,35 +81,33 @@ async function initAuth() {
         const { data: profile } = await db.getProfile(user.id);
         const username = profile?.username || 'User';
         
-        // This replaces the "Log In" button with just your Username
         authSection.innerHTML = `
             <button id="userProfileBtn" class="bg-black text-white px-5 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase hover:bg-gray-800 transition-all active:scale-95">
                 @${username.toUpperCase()}
             </button>
         `;
 
-        // Opens Account Page
         document.getElementById('userProfileBtn').onclick = () => openAccount(user, username);
 
-        // Debug Check
         if (user.email === 'rkormen80@nn.k12.in.us') {
             document.getElementById('debugMenu').classList.remove('hidden');
         }
 
-        // Logout Logic inside the Account Page
         document.getElementById('logoutBtn').onclick = async (e) => {
             e.preventDefault();
             await _supabase.auth.signOut();
-            window.location.href = window.location.pathname; // Hard reset to home
+            window.location.reload();
         };
     } else {
-        const loginBtn = document.getElementById('loginBtn');
-        if (loginBtn) {
-            loginBtn.onclick = () => {
-                setAuthMode(false);
-                document.getElementById('viewAuth').classList.add('active');
-            };
-        }
+        // Ensure Login button works when logged out
+        authSection.innerHTML = `
+            <button id="loginBtn" class="bg-black text-white px-5 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase hover:bg-gray-800 transition-all active:scale-95">
+                Log In
+            </button>
+        `;
+        document.getElementById('loginBtn').onclick = () => {
+            document.getElementById('viewAuth').classList.add('active');
+        };
     }
 }
 
@@ -95,12 +124,7 @@ async function openAccount(user, username) {
     quests.forEach(q => {
         const item = document.createElement('div');
         item.className = "p-5 bg-gray-50 rounded-2xl flex justify-between items-center border border-transparent hover:border-indigo-100 transition-all";
-        item.innerHTML = `
-            <span class="font-bold text-sm">${q.title}</span>
-            <span class="text-[10px] font-black text-indigo-400">👍 ${q.likes}</span>
-        `;
+        item.innerHTML = `<span class="font-bold text-sm">${q.title}</span><span class="text-[10px] font-black text-indigo-400">👍 ${q.likes}</span>`;
         container.appendChild(item);
     });
 }
-
-// Keep your existing renderFeed, handleVote, and handleBookmark below...
