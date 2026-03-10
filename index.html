@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #111827; }
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #111827; overflow-x: hidden; }
         
         /* Smooth Overlay Animation */
         .view-overlay { 
@@ -41,31 +41,28 @@
             transform: translateY(-2px);
         }
 
-        /* Hover Highlight Effect for Buttons */
+        /* Hover Highlight Effect */
         .btn-hover {
             transition: all 0.2s ease;
-            border-radius: 8px;
+            border-radius: 12px;
         }
 
         .btn-hover:hover {
             background-color: rgba(0, 0, 0, 0.05);
-            transform: scale(1.02);
         }
 
         .btn-hover:active {
-            transform: scale(0.98);
+            transform: scale(0.96);
         }
 
-        /* Input focus transitions */
-        input, textarea {
-            transition: border-color 0.2s ease;
-        }
+        input:focus, textarea:focus { outline: none; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body class="antialiased">
 
     <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
-        <div class="max-w-xl mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="max-w-xl mx-auto px-6 py-4 flex justify-between items-center w-full">
             <button id="navCreateBtn" class="btn-hover text-indigo-600 font-bold text-xs uppercase tracking-tight px-3 py-2">
                 + Create
             </button>
@@ -82,9 +79,37 @@
 
     <main class="max-w-xl mx-auto py-10 px-6">
         <div id="questContainer" class="space-y-8">
-            <p class="text-center text-gray-400 py-20 text-[10px] font-bold uppercase tracking-widest animate-pulse">Syncing...</p>
+            <p class="text-center text-gray-400 py-20 text-[10px] font-bold uppercase tracking-widest animate-pulse">Syncing Universe...</p>
         </div>
     </main>
+
+    <section id="viewAccount" class="view-overlay">
+        <div class="max-w-xl mx-auto w-full h-full px-6 flex flex-col">
+            <div class="flex justify-between items-center py-6">
+                <button id="closeAccountBtn" class="btn-hover text-gray-400 font-black text-[10px] tracking-widest uppercase px-3 py-2">← Back</button>
+                <span id="accUsername" class="text-[10px] font-black text-indigo-600 tracking-widest uppercase">@USER</span>
+                <div class="w-8"></div>
+            </div>
+
+            <div class="flex-grow overflow-y-auto pt-4">
+                <h2 class="text-4xl font-black mb-8 tracking-tighter">Your Quests</h2>
+                <div id="userQuestsContainer" class="space-y-4 mb-10">
+                    </div>
+                
+                <button id="logoutBtn" class="w-full border-2 border-gray-100 text-gray-400 p-4 rounded-2xl font-bold text-xs uppercase tracking-widest hover:border-red-100 hover:text-red-400 transition-all mb-10">
+                    Sign Out
+                </button>
+
+                <div id="debugMenu" class="hidden border-t border-gray-100 pt-8 pb-20">
+                    <p class="text-[10px] font-black text-gray-300 uppercase tracking-[0.2em] mb-4">Debug</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button id="debugResetVotes" class="bg-gray-50 text-gray-500 p-3 rounded-xl font-bold text-[10px] uppercase hover:bg-red-50 hover:text-red-500 transition-colors">Reset Votes</button>
+                        <button id="debugDeleteAll" class="bg-gray-50 text-gray-500 p-3 rounded-xl font-bold text-[10px] uppercase hover:bg-red-600 hover:text-white transition-colors">Wipe Quests</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <section id="viewCreate" class="view-overlay">
         <div class="max-w-xl mx-auto w-full h-full px-6 flex flex-col">
@@ -94,11 +119,11 @@
                 <div class="w-8"></div>
             </div>
             <div class="flex-grow space-y-6 pt-10">
-                <input type="text" id="qTitle" placeholder="Title" class="w-full text-4xl font-black border-none outline-none placeholder:text-gray-200">
-                <textarea id="qDesc" placeholder="Description" class="w-full text-xl border-none outline-none h-64 resize-none placeholder:text-gray-200 leading-relaxed"></textarea>
+                <input type="text" id="qTitle" placeholder="Quest Title" class="w-full text-4xl font-black border-none placeholder:text-gray-200">
+                <textarea id="qDesc" placeholder="What is the objective?" class="w-full text-xl border-none h-64 resize-none placeholder:text-gray-200 leading-relaxed"></textarea>
             </div>
             <div class="pb-10">
-                <button id="publishBtn" class="w-full bg-black text-white p-5 rounded-2xl font-bold text-lg hover:bg-gray-800 transition-colors">Publish</button>
+                <button id="publishBtn" class="w-full bg-black text-white p-5 rounded-2xl font-bold text-lg hover:bg-gray-800 transition-colors">Publish Quest</button>
             </div>
         </div>
     </section>
@@ -113,14 +138,14 @@
             <div class="flex-grow pt-10 space-y-8">
                 <h2 id="authHeading" class="text-5xl font-black tracking-tighter">Login</h2>
                 <div id="usernameField" class="hidden">
-                    <input type="text" id="authUsername" placeholder="Username" class="w-full text-xl font-bold border-b border-gray-100 pb-2 outline-none focus:border-black">
+                    <input type="text" id="authUsername" placeholder="Username" class="w-full text-xl font-bold border-b border-gray-100 pb-2 focus:border-black transition-colors">
                 </div>
-                <input type="email" id="authEmail" placeholder="Email" class="w-full text-xl font-bold border-b border-gray-100 pb-2 outline-none focus:border-black">
-                <input type="password" id="authPassword" placeholder="Password" class="w-full text-xl font-bold border-b border-gray-100 pb-2 outline-none focus:border-black">
+                <input type="email" id="authEmail" placeholder="Email" class="w-full text-xl font-bold border-b border-gray-100 pb-2 focus:border-black transition-colors">
+                <input type="password" id="authPassword" placeholder="Password" class="w-full text-xl font-bold border-b border-gray-100 pb-2 focus:border-black transition-colors">
             </div>
             <div class="pb-10 text-center">
                 <button id="authSubmitBtn" class="w-full bg-black text-white p-5 rounded-2xl font-bold text-lg hover:bg-gray-800 transition-colors">Enter</button>
-                <button id="toggleAuthMode" class="mt-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-black transition-colors">Sign Up Instead</button>
+                <button id="toggleAuthMode" class="mt-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-black transition-colors">Need an account? Sign Up</button>
             </div>
         </div>
     </section>
