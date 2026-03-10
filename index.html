@@ -7,35 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        
-        body { 
-            font-family: 'Inter', sans-serif;
-            background-color: #f9fafb; 
-            color: #111827; 
-        }
-
-        .quest-card { 
-            background: white; 
-            border: 1px solid #e5e7eb; 
-            border-radius: 24px;
-            transition: all 0.2s ease;
-        }
-
-        .quest-card:hover { 
-            border-color: #6366f1; 
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-        }
-
-        /* Overlay Transitions */
-        .view-overlay {
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        input:focus, textarea:focus {
-            outline: none;
-        }
-
-        .hidden { display: none; }
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #111827; }
+        .quest-card { background: white; border: 1px solid #e5e7eb; border-radius: 24px; transition: all 0.2s ease; }
+        .quest-card:hover { border-color: #6366f1; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); }
+        .view-overlay { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        input:focus, textarea:focus { outline: none; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body class="antialiased">
@@ -45,9 +22,7 @@
             <button id="navCreateBtn" class="text-indigo-600 font-bold text-sm tracking-tight hover:opacity-70 transition">
                 + CREATE QUEST
             </button>
-            
             <h1 class="text-xl font-black tracking-tighter italic">SIDE QUEST</h1>
-            
             <div id="authSection">
                 <button id="loginBtn" class="bg-black text-white px-5 py-2 rounded-full text-xs font-bold tracking-widest hover:bg-gray-800 transition">
                     LOG IN
@@ -58,56 +33,30 @@
 
     <main id="viewFeed" class="max-w-xl mx-auto py-10 px-4">
         <div id="questContainer" class="space-y-8">
-            <div class="text-center py-20 text-gray-400 animate-pulse">
-                Loading quests...
-            </div>
+            <div class="text-center py-20 text-gray-400">Initializing...</div>
         </div>
     </main>
 
     <section id="viewCreate" class="fixed inset-0 z-[60] bg-white p-6 hidden view-overlay">
         <div class="max-w-lg mx-auto h-full flex flex-col">
             <div class="flex justify-between items-center mb-10">
-                <button id="closeCreateBtn" class="text-gray-400 hover:text-black transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="6 18L18 6M6 6l12 12" />
-                    </svg>
+                <button id="closeCreateBtn" class="text-gray-400 hover:text-black">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="6 18L18 6M6 6l12 12" /></svg>
                 </button>
-                <span class="text-xs font-bold text-gray-300 tracking-widest">NEW ENTRY</span>
+                <span class="text-xs font-bold text-gray-300 tracking-widest uppercase">New Entry</span>
                 <div class="w-6"></div>
             </div>
-
             <h2 class="text-4xl font-black mb-8 tracking-tighter">What's the quest?</h2>
-            
             <div class="space-y-6 flex-grow">
-                <div>
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Title</label>
-                    <input type="text" id="qTitle" placeholder="The Midnight Walk" 
-                        class="w-full text-2xl font-bold p-0 border-none placeholder:text-gray-200">
-                </div>
-
-                <div>
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Description</label>
-                    <textarea id="qDesc" placeholder="Describe the side quest details..." 
-                        class="w-full text-lg p-0 border-none h-40 resize-none placeholder:text-gray-200"></textarea>
-                </div>
-                
+                <input type="text" id="qTitle" placeholder="Title" class="w-full text-2xl font-bold p-0 border-none placeholder:text-gray-200">
+                <textarea id="qDesc" placeholder="Description..." class="w-full text-lg p-0 border-none h-40 resize-none placeholder:text-gray-200"></textarea>
                 <div class="flex items-center gap-6 py-4 border-t border-gray-50">
-                    <label class="flex items-center gap-2 cursor-pointer group text-sm font-medium">
-                        <input type="radio" name="visibility" value="public" checked class="text-black focus:ring-black">
-                        <span class="group-hover:text-indigo-600">Public</span>
-                    </label>
-                    <label class="flex items-center gap-2 cursor-pointer group text-sm font-medium">
-                        <input type="radio" name="visibility" value="private" class="text-black focus:ring-black">
-                        <span class="group-hover:text-indigo-600">Private</span>
-                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer text-sm font-medium"><input type="radio" name="visibility" value="public" checked> Public</label>
+                    <label class="flex items-center gap-2 cursor-pointer text-sm font-medium"><input type="radio" name="visibility" value="private"> Private</label>
                 </div>
             </div>
-
             <div class="pb-10">
-                <button id="publishBtn" class="w-full bg-black text-white p-5 rounded-2xl font-bold text-lg hover:bg-indigo-600 transition shadow-xl shadow-gray-200">
-                    Publish Quest
-                </button>
-                <p class="text-[10px] text-center text-gray-400 mt-4 uppercase tracking-widest font-bold">Permanent Record • No Deletion</p>
+                <button id="publishBtn" class="w-full bg-black text-white p-5 rounded-2xl font-bold text-lg">Publish Quest</button>
             </div>
         </div>
     </section>
@@ -116,38 +65,20 @@
         <div class="max-w-lg mx-auto h-full flex flex-col">
             <div class="flex justify-between items-center mb-10">
                 <button id="closeAuthBtn" class="text-gray-400 hover:text-black">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="6 18L18 6M6 6l12 12" /></svg>
                 </button>
-                <span id="authModeTitle" class="text-[10px] font-bold text-gray-300 tracking-widest uppercase">JOIN THE QUEST</span>
+                <span id="authModeTitle" class="text-[10px] font-bold text-gray-300 tracking-widest uppercase">Join</span>
                 <div class="w-6"></div>
             </div>
-
             <h2 id="authHeading" class="text-4xl font-black mb-8 tracking-tighter text-indigo-600">Create Account</h2>
-            
             <div class="space-y-6 flex-grow">
-                <div id="usernameField">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Username</label>
-                    <input type="text" id="authUsername" placeholder="quest_master" class="w-full text-xl font-bold p-0 border-none">
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Email</label>
-                    <input type="email" id="authEmail" placeholder="ceo@example.com" class="w-full text-xl font-bold p-0 border-none">
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Password</label>
-                    <input type="password" id="authPassword" placeholder="••••••••" class="w-full text-xl font-bold p-0 border-none">
-                </div>
+                <div id="usernameField"><input type="text" id="authUsername" placeholder="Username" class="w-full text-xl font-bold border-b pb-2"></div>
+                <div><input type="email" id="authEmail" placeholder="Email" class="w-full text-xl font-bold border-b pb-2"></div>
+                <div><input type="password" id="authPassword" placeholder="Password" class="w-full text-xl font-bold border-b pb-2"></div>
             </div>
-
             <div class="pb-10">
-                <button id="authSubmitBtn" class="w-full bg-black text-white p-5 rounded-2xl font-bold text-lg hover:bg-indigo-600 transition shadow-xl shadow-gray-200">
-                    Sign Up
-                </button>
-                <button id="toggleAuthMode" class="w-full mt-4 text-xs font-bold text-gray-400 hover:text-black uppercase tracking-widest text-center">
-                    Already have an account? Log In
-                </button>
+                <button id="authSubmitBtn" class="w-full bg-black text-white p-5 rounded-2xl font-bold text-lg">Submit</button>
+                <button id="toggleAuthMode" class="w-full mt-4 text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Already have an account? Log In</button>
             </div>
         </div>
     </section>
@@ -155,6 +86,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-client.js"></script>
     <script src="app.js"></script>
-
 </body>
 </html>
